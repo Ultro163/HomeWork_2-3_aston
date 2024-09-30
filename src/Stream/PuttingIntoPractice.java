@@ -2,6 +2,7 @@ package Stream;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,12 +47,6 @@ public class PuttingIntoPractice {
 
         System.out.println("Есть ли трейдер в Милане?\nОтвет: " + tradersMilan);
 
-        List<Integer> sumTransactionsFromCambridge = transactions.stream()
-                .filter(t -> Objects.equals(t.getTrader().getCity(), "Cambridge"))
-                .map(Transaction::getValue)
-                .toList();
-        System.out.println("Список сумм транзакций трейдеров из Кембриджа: " + sumTransactionsFromCambridge);
-
         List<String> tradersListFromCambridge = transactions.stream()
                 .filter(t -> Objects.equals(t.getTrader().getCity(), "Cambridge"))
                 .map(t -> t.getTrader().getName())
@@ -60,16 +55,15 @@ public class PuttingIntoPractice {
                 .toList();
         System.out.println("Список трейдеров из Кембриджа: " + tradersListFromCambridge);
 
-        int minSumm = transactions.stream()
-                .map(Transaction::getValue)
-                .min(Integer::compare)
-                .get();
-        System.out.println("Максимальная сумма: " + minSumm);
+        IntSummaryStatistics statistics = transactions.stream()
+                .filter(t -> Objects.equals(t.getTrader().getCity(), "Cambridge"))
+                .mapToInt(Transaction::getValue)
+                .summaryStatistics();
 
-        int maxSumm = transactions.stream()
-                .map(Transaction::getValue)
-                .max(Integer::compare)
-                .get();
-        System.out.println("Максимальная сумма: " + maxSumm);
+        System.out.println("Сумма транзакций трейдеров из Кембриджа: " + statistics.getSum());
+        System.out.println("Среднее значение транзакций трейдеров из Кембриджа: " + statistics.getAverage());
+        System.out.println("Минимальная транзакция трейдеров из Кембриджа: " + statistics.getMin());
+        System.out.println("Максимальная транзакция трейдеров из Кембриджа: " + statistics.getMax());
+        System.out.println("Количество транзакций трейдеров из Кембриджа: " + statistics.getCount());
     }
 }
