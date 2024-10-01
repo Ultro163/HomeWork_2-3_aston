@@ -41,21 +41,17 @@ public class ArrayList<T> {
 
 
     public T get(int index) {
-        if (index >= size || index < 0) {
-            throw new IndexOutOfBoundsException("Invalid index: " + index);
-        }
+        checkOutOfBounds(index);
         return (T) data[index];
     }
 
     public void remove(int index) {
-        if (index >= size || index < 0) {
-            throw new IndexOutOfBoundsException("Invalid index: " + index);
-        }
+        checkOutOfBounds(index);
         System.arraycopy(data, index + 1, data, index, size - index - 1);
         data[--size] = null;
     }
 
-    public void addAll(Collection<T> collection) {
+    public void addAll(Collection<? extends T> collection) {
         if (!collection.isEmpty()) {
             for (T element : collection) {
                 this.add(element);
@@ -65,5 +61,11 @@ public class ArrayList<T> {
 
     private Object[] increasingArray(int size, Object[] data) {
         return Arrays.copyOf(data, (int) Math.ceil(size * EXPANSION_COEFFICIENT));
+    }
+
+    private void checkOutOfBounds(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Invalid index: " + index);
+        }
     }
 }
